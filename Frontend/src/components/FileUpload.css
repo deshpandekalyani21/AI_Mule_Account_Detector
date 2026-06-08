@@ -1,0 +1,129 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  padding: 30px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  color: #38bdf8;
+}
+
+.hero p {
+  font-size: 18px;
+  color: #cbd5e1;
+}
+
+input {
+  margin: 15px;
+  padding: 10px;
+}
+
+button {
+  padding: 12px 24px;
+  border: none;
+  background: #38bdf8;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+button:hover {
+  background: #0ea5e9;
+}
+
+.stats-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+.card {
+  width: 180px;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+.card p {
+  font-size: 28px;
+}
+
+.blue {
+  background: #2563eb;
+}
+
+.red {
+  background: #dc2626;
+}
+
+.green {
+  background: #16a34a;
+}
+
+.orange {
+  background: #ea580c;
+}
+
+.purple {
+  background: #7c3aed;
+}
+
+.alert-box {
+  background: #7f1d1d;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.chart-container {
+  width: 350px;
+  margin: 40px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.table-container {
+  margin-top: 40px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  color: black;
+}
+
+th {
+  background: #38bdf8;
+  color: white;
+}
+
+th,
+td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+tr:hover {
+  background: #f1f5f9;
+}
