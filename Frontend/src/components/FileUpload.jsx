@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import "./FileUpload.css";
+
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -34,10 +35,21 @@ function FileUpload() {
         formData
       );
 
-      setResults(response.data);
+      console.log("Backend Response:", response.data);
+
+      if (response.data.success) {
+        setResults(response.data.results);
+      } else {
+        alert(response.data.error || "Prediction failed");
+      }
     } catch (error) {
-      console.error(error);
-      alert("Error connecting to backend");
+      console.error("Frontend Error:", error);
+
+      if (error.response) {
+        alert(`Backend Error: ${error.response.data.detail || error.response.status}`);
+      } else {
+        alert("Error connecting to backend");
+      }
     }
   };
 
@@ -89,10 +101,8 @@ function FileUpload() {
 
   return (
     <div className="container">
-      <div className="hero">
-        <h1>
-          🛡 AI Mule Account Detector
-        </h1>
+      <div className="upload-container">
+        <h1>🛡 AI Mule Account Detector</h1>
 
         <p>
           Detect Suspicious Accounts
@@ -101,16 +111,13 @@ function FileUpload() {
 
         <input
           type="file"
+          accept=".csv"
           onChange={(e) =>
-            setFile(
-              e.target.files[0]
-            )
+            setFile(e.target.files[0])
           }
         />
 
-        <button
-          onClick={handleUpload}
-        >
+        <button onClick={handleUpload}>
           Detect Fraud
         </button>
       </div>
@@ -119,56 +126,34 @@ function FileUpload() {
         <>
           <div className="stats-container">
             <div className="card blue">
-              <h3>
-                Total Accounts
-              </h3>
-              <p>
-                {results.length}
-              </p>
+              <h3>Total Accounts</h3>
+              <p>{results.length}</p>
             </div>
 
             <div className="card red">
-              <h3>
-                Suspicious
-              </h3>
-              <p>
-                {suspiciousCount}
-              </p>
+              <h3>Suspicious</h3>
+              <p>{suspiciousCount}</p>
             </div>
 
             <div className="card green">
-              <h3>
-                Legitimate
-              </h3>
-              <p>
-                {legitimateCount}
-              </p>
+              <h3>Legitimate</h3>
+              <p>{legitimateCount}</p>
             </div>
 
             <div className="card orange">
-              <h3>
-                Fraud %
-              </h3>
-              <p>
-                {fraudPercentage}%
-              </p>
+              <h3>Fraud %</h3>
+              <p>{fraudPercentage}%</p>
             </div>
 
             <div className="card purple">
-              <h3>
-                Avg Risk
-              </h3>
-              <p>
-                {avgRisk}
-              </p>
+              <h3>Avg Risk</h3>
+              <p>{avgRisk}</p>
             </div>
           </div>
 
           {suspiciousCount > 0 && (
             <div className="alert-box">
-              ⚠ Warning:
-              {" "}
-              {suspiciousCount}
+              ⚠ Warning: {suspiciousCount}
               {" "}
               suspicious accounts detected.
             </div>
@@ -179,51 +164,31 @@ function FileUpload() {
           </div>
 
           <div className="table-container">
-            <h2>
-              Prediction Results
-            </h2>
+            <h2>Prediction Results</h2>
 
             <table>
               <thead>
                 <tr>
-                  <th>
-                    Prediction
-                  </th>
+                  <th>Prediction</th>
                   <th>Status</th>
-                  <th>
-                    Risk Score
-                  </th>
+                  <th>Risk Score</th>
                 </tr>
               </thead>
 
               <tbody>
                 {results.map(
-                  (
-                    item,
-                    index
-                  ) => (
-                    <tr
-                      key={
-                        index
-                      }
-                    >
+                  (item, index) => (
+                    <tr key={index}>
                       <td>
-                        {
-                          item.prediction
-                        }
+                        {item.prediction}
                       </td>
 
                       <td>
-                        {item.prediction ===
-                        1
-                          ? "🔴 Mule Account"
-                          : "🟢 Legitimate"}
+                        {item.status}
                       </td>
 
                       <td>
-                        {
-                          item.risk_score
-                        }
+                        {item.risk_score}
                       </td>
                     </tr>
                   )

@@ -6,7 +6,7 @@ import io
 
 app = FastAPI()
 
-# Allow React frontend
+# Enable CORS for React frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -15,33 +15,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model and selected features
+# Load model and features
 model = joblib.load("../Model/mule_account_detector.pkl")
 selected_features = joblib.load("../Model/selected_features.pkl")
+
 
 @app.get("/")
 def home():
     return {"message": "AI Mule Account Detector API Running"}
 
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
+    try:
+        # Read uploaded CSV
+        contents = await file.read()
+        df = pd.read_csv(io.BytesIO(contents))
 
-    contents = await file.read()
-    df = pd.read_csv(io.BytesIO(contents))
+        # Keep only training features
+        df = df[selected_features]
 
-    # Keep only features used during training
-    df = df[selected_features]
+        # Predictions
+        predictions = model.predict(df)
+        probabilities = model.predict_proba(df)[:, 1]
 
-    predictions = model.predict(df)
-    probabilities = model.predict_proba(df)[:, 1]
+        results = []
 
-    results = []
+        for pred, prob in zip(predictions, probabilities):
+            results.append({
+                "prediction": int(pred),
+                "status": "Mule Account Detected" if pred == 1 else "Legitimate Account",
+                "risk_score": round(float(prob), 4)
+            })
 
-    for pred, prob in zip(predictions, probabilities):
-        results.append({
-            "prediction": int(pred),
-            "status": "Mule Account Detected" if pred == 1 else "Legitimate Account",
-            "risk_score": round(float(prob), 4)
-        })
+        return {
+            "success": True,
+            "results": results
+        }
 
-    return results
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
